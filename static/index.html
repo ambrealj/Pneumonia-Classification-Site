@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pneumonia Classification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="panel">
+    <p class="eyebrow">Diagnostic imaging &middot; chest radiograph</p>
+    <h1>Pneumonia Classification</h1>
+    <p class="subhead">Upload a chest X-ray image to screen it.</p>
+
+    <div class="upload-zone">
+      <input type="file" id="file-input" class="visually-hidden" accept="image/jpeg,image/png,image/jpg">
+      <label for="file-input" class="upload-label">
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M12 3v12m0-12l-4 4m4-4l4 4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="upload-text">Choose a chest X-ray image</span>
+        <span class="upload-hint">JPG or PNG</span>
+      </label>
+    </div>
+
+    <div id="viewer" class="viewer hidden">
+      <img id="preview" alt="Uploaded chest X-ray" />
+    </div>
+
+    <div id="readout" class="readout hidden">
+      <p class="readout-label">Result</p>
+      <p class="readout-value" id="class-name">&mdash;</p>
+      <p class="readout-score" id="score"></p>
+    </div>
+  </main>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
