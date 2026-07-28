@@ -1,65 +1,24 @@
-import base64
-
-import streamlit as st
-from PIL import ImageOps, Image
 import numpy as np
+from PIL import Image, ImageOps
 
-
-def set_background(image_file):
-    """
-    This function sets the background of a Streamlit app to an image specified by the given image file.
-
-    Parameters:
-        image_file (str): The path to the image file to be used as the background.
-
-    Returns:
-        None
-    """
-    with open(image_file, "rb") as f:
-        img_data = f.read()
-    b64_encoded = base64.b64encode(img_data).decode()
-    style = f"""
-        <style>
-        .stApp {{
-            background-image: url(data:image/png;base64,{b64_encoded});
-            background-size: cover;
-        }}
-        </style>
-    """
-    st.markdown(style, unsafe_allow_html=True)
+IMG_SIZE = (224, 224)
 
 
 def classify(image, model, class_names):
     """
-    This function takes an image, a model, and a list of class names and returns the predicted class and confidence
-    score of the image.
-
-    Parameters:
-        image (PIL.Image.Image): An image to be classified.
-        model (tensorflow.keras.Model): A trained machine learning model for image classification.
-        class_names (list): A list of class names corresponding to the classes that the model can predict.
-
-    Returns:
-        A tuple of the predicted class name and the confidence score for that prediction.
+    Resize to 224x224, normalize to [-1, 1] (the range MobileNetV2 / the
+    Teachable Machine export expects), and run the model. Supports both
+    single-output binary models and multi-output softmax models.
     """
-    # convert image to (224, 224)
-    image = ImageOps.fit(image, (224, 224), Image.Resampling.LANCZOS)
+    image = ImageOps.fit(image, IMG_SIZE, Image.Resampling.LANCZOS)
+    image_array = np.asarray(image).astype(np.float32)
+    normalized_image_array = (image_array / 127.5) - 1
 
-    # convert image to numpy array
-    image_array = np.asarray(image)
-
-    # normalize image
-    normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
-
-    # set model input
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+    data = np.ndarray(shape=(1,) + IMG_SIZE + (3,), dtype=np.float32)
     data[0] = normalized_image_array
 
-    # make prediction
-    prediction = model.predict(data)
+    prediction = np.asarray(model.predict(data, verbose=0))
 
-    # support both single-output binary models and multi-output softmax models
-    prediction = np.asarray(prediction)
     if prediction.ndim == 2 and prediction.shape[1] > 1:
         index = int(np.argmax(prediction[0]))
         confidence_score = float(prediction[0][index])
@@ -68,5 +27,4 @@ def classify(image, model, class_names):
         index = 0 if probability > 0.5 else 1
         confidence_score = probability if index == 0 else 1.0 - probability
 
-    class_name = class_names[index]
-    return class_name, confidence_score
+    return class_names[index], confidence_score
