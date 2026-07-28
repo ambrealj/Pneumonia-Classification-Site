@@ -1,0 +1,10 @@
+venv/
+train/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.swp
+.DS_Store
+.git/
+.vscode/
