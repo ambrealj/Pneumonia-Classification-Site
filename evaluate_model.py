@@ -6,10 +6,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 from util import classify
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
-DATA_DIR = './train'  # expects ./train/<class_name>/*.jpg, matching labels.txt
+DATA_DIR = './train'  
 
 model = load_model('./model/pneumonia_classifier.h5')
 
@@ -18,10 +15,6 @@ with open('./model/labels.txt', 'r') as f:
 
 print('Classes (in model order):', class_names)
 
-# ---------------------------------------------------------------------------
-# Run the model over every image and compare its prediction to the folder
-# it came from
-# ---------------------------------------------------------------------------
 y_true = []
 y_pred = []
 mistakes = []
@@ -54,9 +47,6 @@ for true_index, class_name in enumerate(class_names):
         if (i + 1) % 100 == 0:
             print(f'  ...{i + 1}/{len(files)}')
 
-# ---------------------------------------------------------------------------
-# Report results
-# ---------------------------------------------------------------------------
 accuracy = accuracy_score(y_true, y_pred)
 print(f'\nOverall accuracy on your dataset: {accuracy * 100:.2f}%')
 
