@@ -5,11 +5,7 @@ IMG_SIZE = (224, 224)
 
 
 def classify(image, model, class_names):
-    """
-    Resize to 224x224, normalize to [-1, 1] (the range MobileNetV2 / the
-    Teachable Machine export expects), and run the model. Supports both
-    single-output binary models and multi-output softmax models.
-    """
+    
     image = ImageOps.fit(image, IMG_SIZE, Image.Resampling.LANCZOS)
     image_array = np.asarray(image).astype(np.float32)
     normalized_image_array = (image_array / 127.5) - 1
